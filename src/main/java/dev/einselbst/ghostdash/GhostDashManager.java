@@ -253,6 +253,20 @@ final class GhostDashManager {
             }
             double effectiveDamage = Math.max(0.0,
                     healthBefore - target.getHealth() - target.getAbsorptionAmount());
+            if (effectiveDamage <= 0.0 && rawDamage > 0.0 && target.isValid() && !target.isDead()) {
+                double fallbackHealthBefore = target.getHealth() + target.getAbsorptionAmount();
+                target.setNoDamageTicks(0);
+                resolvingDashDamage.add(target.getUniqueId());
+                try {
+                    target.damage(rawDamage);
+                } finally {
+                    resolvingDashDamage.remove(target.getUniqueId());
+                }
+                effectiveDamage = Math.max(0.0,
+                        fallbackHealthBefore - target.getHealth() - target.getAbsorptionAmount());
+                plugin.getLogger().warning("Player-attributed Ghost Dash damage was blocked; "
+                        + "used generic fallback for " + target.getName());
+            }
             plugin.getLogger().info("Resolved Ghost Dash hit from " + player.getName()
                     + " to " + target.getName()
                     + ": raw=" + String.format("%.2f", rawDamage)

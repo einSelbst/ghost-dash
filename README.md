@@ -34,7 +34,9 @@ continue. Only death ends the active dash.
 The time-lapse is intentionally visual. Its artificial speed never multiplies
 damage. Damage is derived from the actually recorded route and then capped;
 armor, enchantments, absorption, and totems remain in the normal server damage
-path. The result message reports both effective health loss and raw damage.
+path. If Paper blocks the player-attributed synthetic hit, the plugin retries
+through a generic Minecraft damage source. The result message reports both
+effective health loss and raw damage.
 
 ## Build
 
@@ -44,7 +46,7 @@ Requirements: JDK 21.
 ./gradlew clean test build
 ```
 
-The server JAR is written to `build/libs/GhostDash-0.1.3.jar`.
+The server JAR is written to `build/libs/GhostDash-0.1.4.jar`.
 
 ## Install
 
