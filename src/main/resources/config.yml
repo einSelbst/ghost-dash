@@ -1,0 +1,26 @@
+# Activation: sneak and press the swap-hands key while holding a Lunge spear.
+activation:
+  require-lunge: true
+  minimum-food-level: 6
+  allowed-player-names: []
+
+limits:
+  max-duration-seconds: 8.0
+  max-route-distance-blocks: 64.0
+  cooldown-seconds: 20.0
+
+replay:
+  duration-ticks: 12
+  afterimage-every-ticks: 2
+  afterimage-lifetime-ticks: 4
+  target-lock-range-blocks: 12.0
+
+damage:
+  base-raw-damage: 4.0
+  raw-damage-per-route-block: 0.65
+  maximum-raw-damage: 20.0
+  vessel-damage-multiplier: 1.0
+
+effects:
+  show-route-particles: true
+  show-afterimages: true

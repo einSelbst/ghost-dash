@@ -1,0 +1,19 @@
+name: GhostDash
+version: ${version}
+main: dev.einselbst.ghostdash.GhostDashPlugin
+description: Server-side Ghost Spear dash with a visible vessel and time-lapse replay.
+api-version: '1.21.11'
+author: einSelbst
+website: https://github.com/einSelbst/ghost-dash
+commands:
+  ghostdash:
+    description: Inspect, cancel, or reload Ghost Dash.
+    usage: /ghostdash <status|cancel|reload>
+    aliases: [gd]
+permissions:
+  ghostdash.use:
+    description: Allows a player to use Ghost Dash.
+    default: true
+  ghostdash.admin:
+    description: Allows configuration reloads.
+    default: op
