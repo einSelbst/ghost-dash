@@ -42,6 +42,10 @@ final class GhostDashListener implements Listener {
             return;
         }
 
+        if (manager.isResolvingDashDamage(event.getEntity())) {
+            return;
+        }
+
         if (event.getEntity() instanceof Player victim) {
             if (manager.isForwardedVesselDamage(victim)) {
                 return;

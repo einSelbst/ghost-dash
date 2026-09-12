@@ -16,9 +16,9 @@ replay:
   target-lock-range-blocks: 12.0
 
 damage:
-  base-raw-damage: 4.0
-  raw-damage-per-route-block: 0.65
-  maximum-raw-damage: 20.0
+  base-raw-damage: 8.0
+  raw-damage-per-route-block: 1.5
+  maximum-raw-damage: 60.0
   vessel-damage-multiplier: 1.0
 
 effects:

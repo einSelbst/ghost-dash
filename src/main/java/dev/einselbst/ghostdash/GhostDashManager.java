@@ -44,6 +44,7 @@ final class GhostDashManager {
     private final Map<UUID, Long> cooldownUntil = new HashMap<>();
     private final Set<UUID> spawnedAvatars = new HashSet<>();
     private final Set<UUID> forwardedVesselDamage = new HashSet<>();
+    private final Set<UUID> resolvingDashDamage = new HashSet<>();
     private final NamespacedKey avatarKindKey;
     private final NamespacedKey ownerKey;
     private GhostDashSettings settings;
@@ -242,9 +243,23 @@ final class GhostDashManager {
         if (target != null && target.isValid() && !target.isDead()
                 && target.getWorld().equals(endpoint.getWorld())
                 && target.getLocation().distance(endpoint) <= settings.targetLockRange()) {
-            target.damage(rawDamage, player);
+            double healthBefore = target.getHealth() + target.getAbsorptionAmount();
+            target.setNoDamageTicks(0);
+            resolvingDashDamage.add(target.getUniqueId());
+            try {
+                target.damage(rawDamage, player);
+            } finally {
+                resolvingDashDamage.remove(target.getUniqueId());
+            }
+            double effectiveDamage = Math.max(0.0,
+                    healthBefore - target.getHealth() - target.getAbsorptionAmount());
+            plugin.getLogger().info("Resolved Ghost Dash hit from " + player.getName()
+                    + " to " + target.getName()
+                    + ": raw=" + String.format("%.2f", rawDamage)
+                    + ", effective=" + String.format("%.2f", effectiveDamage));
             player.sendActionBar(Component.text(
-                    "Treffer: " + String.format("%.1f", rawDamage / 2.0) + " Herzen Rohschaden",
+                    "Treffer: " + String.format("%.1f", effectiveDamage / 2.0)
+                            + " Herzen effektiv (" + String.format("%.1f", rawDamage / 2.0) + " roh)",
                     NamedTextColor.LIGHT_PURPLE));
         } else {
             player.sendActionBar(Component.text("Der gespeicherte Treffer ist entkommen.", NamedTextColor.GRAY));
@@ -352,6 +367,10 @@ final class GhostDashManager {
 
     boolean isForwardedVesselDamage(Player player) {
         return forwardedVesselDamage.contains(player.getUniqueId());
+    }
+
+    boolean isResolvingDashDamage(Entity entity) {
+        return resolvingDashDamage.contains(entity.getUniqueId());
     }
 
     boolean protectsGhostBody(Player player, EntityDamageEvent event) {

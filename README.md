@@ -23,7 +23,8 @@ continue. Only death ends the active dash.
 
 - Maximum Ghost duration and route length
 - Independent visual replay speed and combat damage
-- Configurable raw-damage cap (default: 20 points / 10 hearts before armor)
+- Configurable raw-damage profile (default: 8 base + 1.5 per route block,
+  capped at 60 points / 30 hearts before armor)
 - One stored hit per dash
 - Cooldown and optional player allowlist
 - Cleanup on death, quit, world change, reload, or plugin disable
@@ -33,7 +34,7 @@ continue. Only death ends the active dash.
 The time-lapse is intentionally visual. Its artificial speed never multiplies
 damage. Damage is derived from the actually recorded route and then capped;
 armor, enchantments, absorption, and totems remain in the normal server damage
-path.
+path. The result message reports both effective health loss and raw damage.
 
 ## Build
 
@@ -43,7 +44,7 @@ Requirements: JDK 21.
 ./gradlew clean test build
 ```
 
-The server JAR is written to `build/libs/GhostDash-0.1.2.jar`.
+The server JAR is written to `build/libs/GhostDash-0.1.3.jar`.
 
 ## Install
 
