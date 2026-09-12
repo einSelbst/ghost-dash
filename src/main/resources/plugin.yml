@@ -1,7 +1,7 @@
 name: GhostDash
 version: ${version}
 main: dev.einselbst.ghostdash.GhostDashPlugin
-description: Server-side Ghost Spear dash with a visible vessel and time-lapse replay.
+description: Server-side Ghost Spear and Shadow Dash ability with wind-charge movement and time-lapse replay.
 api-version: '1.21.11'
 author: einSelbst
 website: https://github.com/einSelbst/ghost-dash
