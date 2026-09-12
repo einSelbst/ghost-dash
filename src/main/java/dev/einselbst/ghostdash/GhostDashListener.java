@@ -42,9 +42,14 @@ final class GhostDashListener implements Listener {
             return;
         }
 
-        if (event.getEntity() instanceof Player victim && manager.protectsGhostBody(victim)) {
-            event.setCancelled(true);
-            return;
+        if (event.getEntity() instanceof Player victim) {
+            if (manager.isForwardedVesselDamage(victim)) {
+                return;
+            }
+            if (manager.protectsGhostBody(victim, event)) {
+                event.setCancelled(true);
+                return;
+            }
         }
 
         if (!(event instanceof EntityDamageByEntityEvent byEntity)) {

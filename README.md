@@ -10,13 +10,14 @@ and needs no client mod.
 2. Sneak and press the swap-hands key (`F`) to enter Ghost state.
 3. Your visible mannequin (the **vessel**) remains at the starting point while
    your real player becomes hidden from everyone else.
-4. Move normally. Wind charges and other movement mechanics work because the
-   server records your real route once per tick.
+4. Move normally. Wind charges remain active during Ghost state, including
+   their knockback boost, while the server records your real route once per tick.
 5. Land a spear hit on a living entity. The vessel replays the recorded route
    in a fast time-lapse and the stored hit resolves at the end.
 
-If another player attacks the vessel, Ghost state collapses: you are pulled
-back to it and receive the attack through Minecraft's normal damage pipeline.
+If another player attacks the vessel, the attack is forwarded through
+Minecraft's normal damage pipeline, but Ghost state and the recorded route
+continue. Only death ends the active dash.
 
 ## Safety and balancing
 
@@ -27,6 +28,7 @@ back to it and receive the attack through Minecraft's normal damage pipeline.
 - Cooldown and optional player allowlist
 - Cleanup on death, quit, world change, reload, or plugin disable
 - `/ghostdash cancel` as a player kill switch
+- Player notifications use the action bar and do not write to chat
 
 The time-lapse is intentionally visual. Its artificial speed never multiplies
 damage. Damage is derived from the actually recorded route and then capped;
@@ -41,7 +43,7 @@ Requirements: JDK 21.
 ./gradlew clean test build
 ```
 
-The server JAR is written to `build/libs/GhostDash-0.1.1.jar`.
+The server JAR is written to `build/libs/GhostDash-0.1.2.jar`.
 
 ## Install
 

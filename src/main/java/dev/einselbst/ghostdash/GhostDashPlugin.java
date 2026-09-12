@@ -43,7 +43,7 @@ public final class GhostDashPlugin extends JavaPlugin implements CommandExecutor
                     sender.sendMessage("GhostDash is running. Active sessions: " + manager.activeCount());
                     return true;
                 }
-                player.sendMessage(manager.statusMessage(player));
+                respond(sender, manager.statusMessage(player));
                 return true;
             }
             case "cancel" -> {
@@ -52,23 +52,23 @@ public final class GhostDashPlugin extends JavaPlugin implements CommandExecutor
                     return true;
                 }
                 if (!manager.cancel(player, true, "Ghost Dash abgebrochen.")) {
-                    player.sendMessage(Component.text("Du bist gerade nicht im Ghost-Zustand.", NamedTextColor.GRAY));
+                    respond(sender, Component.text("Du bist gerade nicht im Ghost-Zustand.", NamedTextColor.GRAY));
                 }
                 return true;
             }
             case "reload" -> {
                 if (!sender.hasPermission("ghostdash.admin")) {
-                    sender.sendMessage(Component.text("Dafür fehlt dir die Berechtigung.", NamedTextColor.RED));
+                    respond(sender, Component.text("Dafür fehlt dir die Berechtigung.", NamedTextColor.RED));
                     return true;
                 }
                 manager.cancelAll(true, "Ghost Dash wurde neu geladen.");
                 reloadConfig();
                 manager.updateSettings(GhostDashSettings.from(getConfig()));
-                sender.sendMessage(Component.text("GhostDash-Konfiguration neu geladen.", NamedTextColor.GREEN));
+                respond(sender, Component.text("GhostDash-Konfiguration neu geladen.", NamedTextColor.GREEN));
                 return true;
             }
             default -> {
-                sender.sendMessage(Component.text("Benutzung: /ghostdash <status|cancel|reload>", NamedTextColor.YELLOW));
+                respond(sender, Component.text("Benutzung: /ghostdash <status|cancel|reload>", NamedTextColor.YELLOW));
                 return true;
             }
         }
@@ -82,5 +82,13 @@ public final class GhostDashPlugin extends JavaPlugin implements CommandExecutor
         return sender.hasPermission("ghostdash.admin")
                 ? List.of("status", "cancel", "reload")
                 : List.of("status", "cancel");
+    }
+
+    private static void respond(CommandSender sender, Component message) {
+        if (sender instanceof Player player) {
+            player.sendActionBar(message);
+        } else {
+            sender.sendMessage(message);
+        }
     }
 }

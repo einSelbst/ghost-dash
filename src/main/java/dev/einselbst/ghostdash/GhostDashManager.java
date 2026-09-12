@@ -12,11 +12,13 @@ import org.bukkit.Tag;
 import org.bukkit.World;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.AbstractWindCharge;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Mannequin;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
@@ -41,6 +43,7 @@ final class GhostDashManager {
     private final Map<UUID, DashSession> sessions = new HashMap<>();
     private final Map<UUID, Long> cooldownUntil = new HashMap<>();
     private final Set<UUID> spawnedAvatars = new HashSet<>();
+    private final Set<UUID> forwardedVesselDamage = new HashSet<>();
     private final NamespacedKey avatarKindKey;
     private final NamespacedKey ownerKey;
     private GhostDashSettings settings;
@@ -321,18 +324,16 @@ final class GhostDashManager {
             return;
         }
         double forwardedDamage = Math.max(0.0, event.getDamage() * settings.vesselDamageMultiplier());
-        Location origin = session.origin.clone();
-        cleanupSession(session, true);
-        owner.teleport(origin);
-        origin.getWorld().spawnParticle(Particle.REVERSE_PORTAL, origin.clone().add(0, 1, 0),
-                50, 0.4, 0.8, 0.4, 0.06);
-        origin.getWorld().playSound(origin, Sound.ENTITY_ENDERMAN_HURT, 1.0f, 0.7f);
-        if (source != null) {
-            owner.damage(forwardedDamage, source);
-        } else {
-            owner.damage(forwardedDamage);
+        forwardedVesselDamage.add(ownerId);
+        try {
+            if (source != null) {
+                owner.damage(forwardedDamage, source);
+            } else {
+                owner.damage(forwardedDamage);
+            }
+        } finally {
+            forwardedVesselDamage.remove(ownerId);
         }
-        message(owner, "Deine Hülle wurde getroffen — Ghost Dash ist kollabiert.");
     }
 
     private Entity resolveDamageSource(Entity directSource) {
@@ -349,8 +350,16 @@ final class GhostDashManager {
         return entity.getPersistentDataContainer().has(avatarKindKey, PersistentDataType.STRING);
     }
 
-    boolean protectsGhostBody(Player player) {
-        return sessions.containsKey(player.getUniqueId());
+    boolean isForwardedVesselDamage(Player player) {
+        return forwardedVesselDamage.contains(player.getUniqueId());
+    }
+
+    boolean protectsGhostBody(Player player, EntityDamageEvent event) {
+        if (!sessions.containsKey(player.getUniqueId())) {
+            return false;
+        }
+        Entity directSource = event.getDamageSource().getDirectEntity();
+        return !(directSource instanceof AbstractWindCharge);
     }
 
     void freezeDuringReplay(PlayerMoveEvent event) {
@@ -393,8 +402,7 @@ final class GhostDashManager {
     }
 
     void message(Player player, String text) {
-        player.sendMessage(Component.text("[GhostDash] ", NamedTextColor.DARK_AQUA)
-                .append(Component.text(text, NamedTextColor.GRAY)));
+        player.sendActionBar(Component.text(text, NamedTextColor.GRAY));
     }
 
     void shutdown() {

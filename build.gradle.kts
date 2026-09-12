@@ -3,7 +3,7 @@ plugins {
 }
 
 group = "dev.einselbst.ghostdash"
-version = "0.1.1"
+version = "0.1.2"
 val pluginVersion = version.toString()
 
 repositories {
