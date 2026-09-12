@@ -41,7 +41,7 @@ Requirements: JDK 21.
 ./gradlew clean test build
 ```
 
-The server JAR is written to `build/libs/GhostDash-0.1.0.jar`.
+The server JAR is written to `build/libs/GhostDash-0.1.1.jar`.
 
 ## Install
 

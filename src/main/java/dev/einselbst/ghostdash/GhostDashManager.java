@@ -449,12 +449,6 @@ final class GhostDashManager {
         target.setArmorContents(source.getArmorContents());
         target.setItemInMainHand(source.getItemInMainHand());
         target.setItemInOffHand(source.getItemInOffHand());
-        target.setHelmetDropChance(0.0f);
-        target.setChestplateDropChance(0.0f);
-        target.setLeggingsDropChance(0.0f);
-        target.setBootsDropChance(0.0f);
-        target.setItemInMainHandDropChance(0.0f);
-        target.setItemInOffHandDropChance(0.0f);
     }
 
     private static boolean isSpear(ItemStack item) {
